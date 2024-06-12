@@ -8,23 +8,23 @@ POST {{server}}/blog
 Content-Type: application/json
 
 {
-  "title": "테스트 3",
+  "title": "테스트 5",
   "content": "테스트 본문",
   "name": "동명이인"
 }
 
 ### 특정 게시글 조회
-GET {{server}}/blog/2
+GET {{server}}/blog/666912fbe55ccf46da01940c
 
 ### 게시글 삭제
-DELETE {{server}}/blog/2
+DELETE {{server}}/blog/666912fbe55ccf46da01940c
 
 ### 게시글 수정
-PUT {{server}}/blog/2
+PUT {{server}}/blog/666912fbe55ccf46da01940c
 Content-Type: application/json
 
 {
-  "title": "수정 테스트 2",
-  "content": "수정 테스트 본문 2",
-  "name": "jreome.kim"
+  "title": "수정 테스트 4",
+  "content": "수정 테스트 본문 4",
+  "name": "동명이인"
 }

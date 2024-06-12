@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
 import { readFile, writeFile } from 'fs/promises';
+import { Model } from 'mongoose';
 import { PostDto } from 'src/blog.model';
+import { Blog, BlogDocument } from 'src/blog.schema';
 
 export interface BlogRepository {
   getAllPost(): Promise<PostDto[]>;
@@ -46,5 +49,44 @@ export class BlogFileRepository implements BlogRepository {
     const updatePost = { id, ...postDto, updatedDt: new Date() };
     posts[index] = updatePost;
     await writeFile(this.FILE_NAME, JSON.stringify(posts));
+  }
+}
+
+@Injectable()
+export class BlogMongoRepository implements BlogRepository {
+  constructor(
+    @InjectModel(Blog.name) private readonly blogModel: Model<BlogDocument>,
+  ) {}
+
+  async getAllPost(): Promise<PostDto[]> {
+    return await this.blogModel.find().exec();
+  }
+
+  async getPost(id: string): Promise<PostDto> {
+    return await this.blogModel.findById(id);
+  }
+
+  async createPost(postDto: PostDto) {
+    const createPost = {
+      ...postDto,
+      createdDt: new Date(),
+      updatedDt: new Date(),
+    };
+
+    await this.blogModel.create(createPost);
+  }
+
+  async updatePost(id: string, postDto: PostDto) {
+    const updatePost = {
+      id,
+      ...postDto,
+      updatedDt: new Date(),
+    };
+
+    await this.blogModel.findByIdAndUpdate(id, updatePost);
+  }
+
+  async deletePost(id: string) {
+    await this.blogModel.findByIdAndDelete(id);
   }
 }
